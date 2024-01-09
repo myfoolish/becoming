@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--
+        CSS的盒子模型
+        CSS框模型（Box Model）规定了元素框处理元素内容、内边距、外框和外边距的方式
+            内边距：padding
+                例：如果你希望所有h1元素的各边都有10像素的内边距，只需要：  h1{padding: 10px;}
+                    还可以按照上、右、下、左的顺序分别设置各边的内边距。各边均可以使用不同的单位或百分比值：    h1{padding: 10px 0.25em 2ex 20%;}
+                单边内边距属性 可以通过使用下面四个单独的属性。分别设置上、右、下、左边距：
+                    padding-top
+                    padding-right
+                    padding-bottom
+                    padding-left
+            边框：border
+                border-top-style
+                border-right-style
+                border-bottom-style
+                border-left-style
+            外边距：margin
+                margin-top
+                margin-right
+                margin-bottom
+                margin-left
+    -->
+    <style type="text/css">
+        h1 {
+            padding: 10px;
+        }
+        h2 {
+            padding: 10px 0.25em 2ex 20%;
+        }
+        .div01 {
+            border: 3px solid red;
+            width: 100px;
+            height: 100px;
+            float: left;
+        }
+        #div01{
+            box-sizing: border-box;
+            /*padding-left: 5px;*/
+            /*margin-right: 20px;*/
+            padding: 10px;
+            margin: 20px;
+        }
+    </style>
+    <title>Box Model</title>
+</head>
+<body>
+<h1>这是一级标签</h1>
+<h2>这是二级标签</h2>
+<div class="div01" id="div01">坏脾气先生L</div>
+<div class="div01">坏脾气先生L</div>
+</body>
+</html>

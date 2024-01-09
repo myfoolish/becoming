@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- CSS 样式 -->
+    <!--
+        边框和尺寸：border、width、height
+            border：用于设置边框的样式
+                格式：宽度 样式 颜色
+                style="border:1px solid red"    1像素实边红色
+                    样式取值：solid 实线、none 无边、double 双线
+            width、height：用于设置标签的宽度和高度
+     -->
+    <!--
+        HTML提供丰富的标签，这些标签被定义成了不同的类型，一般分为：块标签和行内标签
+            块标签：以区域块方式出现，每个块标签独自占据一整行或多整行。
+                常见的块元素：<h1>、<div>、<ul>...
+            行内标签：不必在新的一行开始，同时也不强迫其他元素在新的一行显示。
+                常见的行内元素：<span>、<a>...
+        在开发中，希望行内元素具有块元素的特性，需要使用display进行转换
+        选择器{display:属性值}
+            常用的属性值：
+                inline：此元素将显示为行内元素（行内元素默认的display属性值）
+                block：此元素将显示为块元素（块元素默认的display属性值）
+                none：此元素将被隐藏，不显示，也不占用页面空间
+    -->
+    <!-- 字体：color、font-size -->
+    <!-- 背景色：background-color -->
+    <!--
+        布局：float、clear
+        通常默认的排版方式，将页面中的元素从上到下一一罗列，而实际开发中，需要左右方式进行排版，就需要使用浮动
+            选择器{float:属性值；}
+                常用属性值：
+                    left：元素向左浮动
+                    right：元素向右浮动
+                    none：元素不浮动（默认值）
+        由于浮动元素不再占用原文档流的位置，所以它会对页面中其他元素的排版产生影响。如果要避免影响，需要使用clear属性进行清除浮动。
+            选择器{clear:属性值;}
+                常用属性值：
+                    left：不允许左侧有浮动元素（清除左侧浮动的影响）
+                    right：不允许右侧有浮动元素（清除右侧浮动的影响）
+                    both：同时清除左右两侧浮动的影响）
+    -->
+    <style type="text/css">
+        div{
+            border: 1px solid red;
+            width: 200px;
+            height: 200px;
+        }
+        span{
+            border: 1px solid #ff0000;
+            width: 200px;
+            height: 50px;
+        }
+    </style>
+    <title>hello css03</title>
+</head>
+<body>
+<div>xxx登陆系统！</div>
+<hr>
+<!-- 默认显示一行，边框环绕，宽高没有作用 -->
+<span>这是一个span标签01</span>
+<span>这是一个span标签02</span>
+<!-- 每一行显示，宽高有作用 -->
+<span style="display: block">这是一个span标签03</span>
+<hr>
+<ol>
+    <li>Passerby</li>
+    <li style="background-color: red">MyFoolish</li>
+    <li>XwCoding</li>
+</ol>
+<hr />
+<!-- 默认上下布局 -->
+<ul>
+    <li>区域1-1</li>
+    <li>区域1-2</li>
+</ul>
+<!-- 浮动左右布局 -->
+<ul>
+    <li style="float: left;">区域2-1</li>
+    <li style="float: right;">区域2-2</li>
+</ul>
+<!-- 取消浮动，另起一行布局 -->
+<ul style="clear: both;"></ul>
+<ul>
+    <li style="float: left;">区域3-1</li>
+    <li style="float: left;">区域3-2</li>
+    <li style="float: left;">区域3-2</li>
+</ul>
+</body>
+</html>

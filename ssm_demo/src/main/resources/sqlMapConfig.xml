@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <!-- 配置 properties 文件的位置 -->    <!-- 第2⃣️步 -->
+    <properties resource="jdbc.properties"/>
+
+    <!-- 配置环境 --> <!-- 第1⃣️步 -->
+    <environments default="mysql">
+        <!--  配置 mysql 环境  -->
+        <environment id="mysql">
+            <!--  配置事务的类型  -->
+            <transactionManager type="JDBC"/>
+            <!--  配置连接池：POOLED  -->
+            <dataSource type="POOLED">
+                <property name="driver" value="${jdbc.driver}"/>
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.username}"/>
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!-- 指定映射配置文件或者注解类的位置 -->   <!-- 第3⃣️步 -->
+    <mappers>
+        <package name="com.xw.mapper"/>
+    </mappers>
+</configuration>

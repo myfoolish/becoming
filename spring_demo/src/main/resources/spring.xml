@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:content="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util.xsd
+">
+
+    <bean id="knight" class="com.xw.springinaction.knights.BraveKnight">
+        <constructor-arg ref="quest"/>  <!-- 注入 quest -->
+    </bean>
+
+    <bean id="quest" class="com.xw.springinaction.knights.SlayDragonQuest">     <!-- 创建 SlayDragonQuest-->
+        <constructor-arg value="#{T(System).out}"/>
+    </bean>
+
+    <bean id="minstrel" class="com.xw.springinaction.knights.Minstrel">
+        <constructor-arg value="#{T(System).out}"/>
+    </bean>
+
+    <!--
+     * 切面表达式：execution(* com.xw.service.impl..*.*(..))
+     *  execution 代表所要执行的表达式主体
+     *      第一处 * 代表方法返回类型，* 代表所有类型
+     *      第二处 包名代表 aop 所监控的类所在的包
+     *      第三处 .. 代表该包以及其子包下的所有类方法
+     *      第四处 * 代表类名，* 代表所有类
+     *      第五处 *(..) * 代表类中的方法名，(..) 表示方法中的任何参数
+      -->
+    <aop:config>
+        <aop:aspect ref="minstrel">
+            <aop:pointcut id="embark" expression="execution(* com.xw.springinaction.knights.BraveKnight.embark(..))"/>   <!-- 定义切入点 -->
+            <aop:before method="singBeforeQuest" pointcut-ref="embark"/>    <!-- 声明前置通知 -->
+            <aop:after method="singAfterQuest" pointcut-ref="embark"/>  <!-- 声明后置通知 -->
+        </aop:aspect>
+    </aop:config>
+
+    <!-- 启用组件扫描 同等于 com.xw.springinaction.soundsystem.config.CDPlayerConfig -->
+<!--    <content:component-scan base-package="com.xw.springinaction.soundsystem"/>-->
+
+    <!-- *********************************************************************************************************** -->
+
+    <bean id="comPactDisc" class="com.xw.springinaction.soundsystem.SgtPeppers"/>
+
+    <!-- 1⃣️：将引用对象注入到构造器中 -->
+    <bean id="cdPlayer" class="com.xw.springinaction.soundsystem.CDPlayer">
+        <!--
+            1、构造器注入
+            Spring为 <constructor-arg> 元素提供了 c-命名空间作为替代方案
+            <bean id="cdPlayer" class="com.xw.springinaction.soundsystem.CDPlayer" c:cd-ref="comPactDisc"/>
+            <bean id="cdPlayer" class="com.xw.springinaction.soundsystem.CDPlayer" c:_0-ref="comPactDisc"/>
+        -->
+        <constructor-arg ref="comPactDisc"/>
+        <!--
+            2、属性注入
+            Spring为 <property> 元素提供了更加简洁的 p-命名空间作为替代方案
+            <bean id="cdPlayer" class="com.xw.springinaction.soundsystem.CDPlayer" p:cd-ref="comPactDisc"/>
+        -->
+        <property name="cd" ref="comPactDisc"/>
+    </bean>
+
+    <!-- 2⃣️：将字面量注入到构造器中 -->
+    <bean id="comPactDisc01" class="com.xw.springinaction.soundsystem.BlankDisc">
+        <constructor-arg value="Sgt. Pepper's Lonely Hearts Club Band"/>
+        <constructor-arg value="The Beatles"/>
+        <!--
+            等价于
+            <bean id="comPactDisc" class="com.xw.springinaction.soundsystem.BlankDisc" c:title="Sgt. Pepper's Lonely Hearts Club Band" c:artist="The Beatles"/>
+            <bean id="comPactDisc" class="com.xw.springinaction.soundsystem.BlankDisc" c:_0="Sgt. Pepper's Lonely Hearts Club Band" c:_1="The Beatles"/>
+        -->
+    </bean>
+
+    <!-- 3⃣️：将集合注入到构造器中 -->
+    <bean id="comPactDisc02" class="com.xw.springinaction.soundsystem.BlankDisc">
+        <!--
+            1、构造器注入
+        -->
+        <constructor-arg value="Sgt. Pepper's Lonely Hearts Club Band"/>
+        <constructor-arg value="The Beatles"/>
+<!--        <constructor-arg><null/></constructor-arg>-->
+        <constructor-arg>
+            <list>  <!-- 可换成 <set> 如果是Set的话，所有重复的值都会被忽略掉，存放顺序也不会得以保证。-->
+                <value>Sgt. Pepper's Lonely Hearts Club Band</value>
+                <value>With a Little Help from My Friends</value>
+                <value>Lucky in the Sky with Diamonds</value>
+                <value>Getting Better</value>
+                <value>Fixing a Hole</value>
+                <!-- ...other tracks omitted for brevity... -->
+            </list>
+        </constructor-arg>
+        <!--
+            2、属性注入
+            util-命名空间所提供的功能之一就是<util:list>元素
+            <bean id="comPactDisc02" class="com.xw.springinaction.soundsystem.BlankDisc" p:title="Sgt. Pepper's Lonely Hearts Club Band" p:artist="The Beatles" p:tracks-ref="trackList"/>
+            <util:list id="trackList">
+                <value>Sgt. Pepper's Lonely Hearts Club Band</value>
+                <value>With a Little Help from My Friends</value>
+                <value>Lucky in the Sky with Diamonds</value>
+                <value>Getting Better</value>
+                <value>Fixing a Hole</value>
+            </util:list>
+        -->
+        <property name="title" value="Sgt. Pepper's Lonely Hearts Club Band"/>
+        <property name="artist" value="The Beatles"/>
+<!--        <property name="tracks"><null/></property>-->
+        <property name="tracks">
+            <set>
+                <value>Sgt. Pepper's Lonely Hearts Club Band</value>
+                <value>With a Little Help from My Friends</value>
+                <value>Lucky in the Sky with Diamonds</value>
+                <value>Getting Better</value>
+                <value>Fixing a Hole</value>
+            </set>
+        </property>
+    </bean>
+
+    <bean id="beatlesDiscography" class="com.xw.springinaction.soundsystem.Discography">
+        <constructor-arg value="The Beatles"/>
+        <!--        <constructor-arg><null/></constructor-arg>-->
+        <constructor-arg>
+            <list>
+                <ref bean="comPactDisc"/>
+                <ref bean="comPactDisc01"/>
+                <ref bean="comPactDisc02"/>
+            </list>
+        </constructor-arg>
+    </bean>
+    <!-- 1、使用 <import> 元素来引用其他xml配置文件 -->
+<!--    <import resource="spring.xml"/>-->
+    <!-- 2、使用 <bean> 元素来引用JavaConfig配置文件 -->
+    <bean class="com.xw.springinaction.soundsystem.config.CDPlayerConfig"/>
+</beans>

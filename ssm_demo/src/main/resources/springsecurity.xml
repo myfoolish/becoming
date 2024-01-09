@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/security
+       http://www.springframework.org/schema/security/spring-security.xsd
+">
+    <!--================================授权验证(验证角色访问权限)========================================-->
+    <!--登陆页及其他页面放行,success.jsp不用放行，因为到这个页面那就是登陆成功-->
+    <security:http pattern="/login.jsp" security="none"/>
+    <security:http pattern="/error.jsp" security="none"/>
+    <security:http pattern="/fashion.ico" security="none"/>
+    <!--<security:http pattern="/success.jsp" security="none"/>-->
+    <!--<security:http pattern="/index.jsp" security="none"/>-->
+
+    <!--
+        配置拦截的规则
+        auto-config="使用SpringSecurity自带的页面"
+        use-expressions="是否使用spel表达式"，如果使用表达式：hasRole('ROLE_USER')
+    -->
+    <security:http auto-config="true" use-expressions="false">
+        <!-- <security:http auto-config="true" use-expressions="true"/>  使用表达式-->
+        <!--
+            配置拦截的请求地址，任何请求地址都必须有ROLE_USER的权限
+            access：角色名配置，意味着什么样的角色可以访问pattern中的url资源
+            SpringSecurity中内置了这两个角色字符串ROLE_USER和ROLE_ADMIN
+            角色和权限的配置是在xml中，用户的验证我们随后改成读取数据库数据
+        -->
+        <security:intercept-url pattern="/**" access="ROLE_USER"/>
+        <!--使用表达式-->
+        <!--<security:intercept-url pattern="/**" access="hasRole（‘ROLE_USER’）"/>-->
+        <!--<security:intercept-url pattern="/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')"/>  需要use-expressions="true"-->
+
+        <!--
+            自定义登陆及跳转页面
+            security:form-login：配置自定义登陆页及跳转相关
+            login-page:配置自定义登陆页面
+            login-processing-url:后台处理登录请求的处理器   /login安全框架自带
+            default-target-url：登陆成功之后默认跳转的目标页面
+            authentication-failure-url：登陆失败之后默认跳转的目标页面，前提是没有期望的资源
+                                        (比如要访问某个url，URL1，那么因为没有登陆被拦截到了登陆页，那么登陆之后就直接跳转到URL1,
+                                        而不是我们设置的default-target-url)
+            username-parameter:实际登陆页用户名的参数名称
+            password-parameter:实际登陆页密码的参数名称
+        -->
+        <security:form-login
+                login-page="/login.jsp"
+                login-processing-url="/login"
+                default-target-url="/success.jsp"
+                authentication-failure-url="/error.jsp"
+                username-parameter="username"
+                password-parameter="password"/>
+        <!--
+            跨域请求伪造(关闭它)
+            因为我们访问自定义登陆页面的时候，security认为是其他网站的页面，不安全
+        -->
+        <security:csrf disabled="true"/>
+    </security:http>
+
+    <!--================================认证(验证用户名和密码合法性)========================================-->
+    <!-- 配置认证管理器 -->
+    <security:authentication-manager>
+        <security:authentication-provider>
+            <security:user-service>
+                <!--
+                    noop是一个标识，表示密码不能明文，密码往往会有很多其他方式，这里默认编码就是不编码
+                    {noop}代表SpringSecurity在进行用户认证的时候，密码使用明文(对比的时候输入什么就是什么。不做加密转换)
+                -->
+                <!-- 配置可以登录的用户 -->
+                <!--<security:user name="admin" password="{noop}admin" authorities="ROLE_ADMIN"/>-->
+                <security:user name="user" password="{noop}user" authorities="ROLE_USER"/>
+            </security:user-service>
+        </security:authentication-provider>
+    </security:authentication-manager>
+</beans>

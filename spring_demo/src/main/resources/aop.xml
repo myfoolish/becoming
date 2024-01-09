@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+">
+
+    <bean id="userDao" class="com.xw.spring.aop.dao.UserDao"/>
+    <bean id="userService" class="com.xw.spring.aop.service.UserService">
+        <property name="userDao" ref="userDao"/>
+    </bean>
+
+    <context:component-scan base-package="com.xw.spring.aop"/>
+    <!-- 启用Spring aop注解模式 -->
+    <aop:aspectj-autoproxy/>
+
+    <bean id="serviceAspect" class="com.xw.spring.aop.aspect.ServiceAspect"/>
+
+    <!-- AOP配置 -->
+    <aop:config>
+        <!-- PointCut 切点 使用execution表达式描述切面的作用范围 -->
+        <!-- execution(public * com.xw..*.*(..)) 说明切面作用在com.xw包下的所有类的所有方法上 -->
+        <aop:pointcut id="pointcut" expression="execution(public * com.xw..*.*(..))"/>
+        <!-- 对类进行约束 -> 只对所有Service类生效 public可以省略-->
+<!--        <aop:pointcut id="pointcut" expression="execution(* com.xw..*Service.*(..))"/>-->
+        <!-- 对方法进行约束 -> 只对所有insert开头的方法生效 -->
+<!--        <aop:pointcut id="pointcut" expression="execution(* com.xw..*.insert*(..))"/>-->
+        <!-- 对返回值类型进行约束 -> 只对所有返回值为String类型的方法生效 -->
+<!--        <aop:pointcut id="pointcut" expression="execution(String com.xw..*Service.*(..))"/>-->
+        <!-- 对参数进行约束 -> 只对无参数的方法生效 -->
+<!--        <aop:pointcut id="pointcut" expression="execution(* com.xw..*Service.*())"/>-->
+        <!-- 对参数进行约束 -> 只对有两个参数的方法生效 -->
+<!--        <aop:pointcut id="pointcut" expression="execution(* com.xw..*Service.*(*,*))"/>-->
+        <!-- 定义切面类 -->
+        <aop:aspect ref="serviceAspect">
+            <!-- before 前置通知 表示在目标方法执行前先执行service.printExecutionTime() -->
+<!--            <aop:before method="printExecutionTime" pointcut-ref="pointcut"/>-->
+            <!-- 执行顺序与配置顺序有关 【后置返回通知与异常通知互斥】 -->
+<!--            <aop:after method="doAfter" pointcut-ref="pointcut"/>-->
+<!--            <aop:after-returning method="doAfterReturning" pointcut-ref="pointcut" returning="o"/>-->
+<!--            <aop:after-throwing method="doAfterThrowing" pointcut-ref="pointcut" throwing="t"/>-->
+<!--            <aop:around method="countExecutionTime" pointcut-ref="pointcut"/>-->
+        </aop:aspect>
+    </aop:config>
+</beans>

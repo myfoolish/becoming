@@ -1,0 +1,65 @@
+server:
+  port: 1222
+
+spring:
+  application:
+    name: seata-server
+  # 1、多数据源（模拟）
+  datasource:
+    # XA模式
+    xa1:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://127.0.0.1:3306/becoming?useSSL=true
+      username: root
+      password: root
+    xa2:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://127.0.0.1:3306/becoming?useSSL=true
+      username: root
+      password: root
+    # AT模式
+    at1:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://127.0.0.1:3306/becoming?useSSL=true
+      username: root
+      password: root
+    at2:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://127.0.0.1:3306/becoming?useSSL=true
+      username: root
+      password: root
+
+seata:
+  registry:
+    type: file # 配置注册中心，如果没有注册中心默认file，可以省略不写
+  config:
+    type: file  # 配置配置中心，如果没有配置中心默认file，可以省略不写
+  service:
+    # # 指定事务分组 default_tx_group 表示分组名称 default 表示集群名称
+    vgroup-mapping:
+      default_tx_group: default
+    # 指定seata服务器地址
+    grouplist:
+      # 集群名称: seata地址
+      default: 192.168.229.10:8091
+    # 禁用全局事务 true 禁用 false 开启（默认 可以省略不写）
+    disable-global-transaction: false
+  # 指定项目名称 默认取值spring.application.name，若存在spring.application.name 可以省略不写
+#  application-id: user
+  tx-service-group: default_tx_group
+
+  # 1、开启自动代理 默认 true 开启 可以省略不写
+#  enable-auto-data-source-proxy: true
+  # 2、指定使用那种模式解决分布式事务 默认AT
+#  data-source-proxy-mode: XA
+#  data-source-proxy-mode: AT
+
+  # 关闭自动代理
+  enable-auto-data-source-proxy: false
+  # 若想修改回滚日志表表名称，在此指定，默认undo_log，不修改可以省略不写（一般不改动）
+  client:
+    undo:
+      log-table: undo_log
+
+# 【使用XA模式的两种方式：1、开启自动代理，并指定XA；2、关闭自动代理，在数据源手动代理】
+# 【使用AT模式的两种方式：1、开启自动代理，默认AT；2、关闭自动代理，在数据源手动代理】

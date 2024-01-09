@@ -1,0 +1,27 @@
+{
+  "查询": "http://192.168.31.195/索引/_search",
+  "计数": "http://192.168.31.195/索引/_count",
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "msgType": "result"
+          }
+        }
+      ],
+      "filter": {
+        "range": {
+          "reqTime": {
+            "gte": "2021-09-28 11:32:23",
+            "lte": "2021-09-28 11:32:26",
+            "format": "yyyy-MM-dd HH:mm:ss"
+          }
+        }
+      }
+    }
+  },
+  "term": {
+    "msgType": "result"
+  }
+}

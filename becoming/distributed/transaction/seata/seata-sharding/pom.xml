@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.xw</groupId>
+        <artifactId>seata</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <!-- 分库分表 -->
+    <artifactId>seata-sharding</artifactId>
+
+    <dependencies>
+        <!-- 分库分表 -->
+        <dependency>
+            <groupId>org.apache.shardingsphere</groupId>
+            <artifactId>sharding-jdbc-spring-boot-starter</artifactId>
+            <version>4.1.1</version>
+        </dependency>
+        <!-- sharding支持XA模式的依赖
+            在service上添加注解 @ShardingTransactionType(TransactionType.XA) 配合@Transactional使用
+            https://mvnrepository.com/artifact/org.apache.shardingsphere/sharding-transaction-xa-core
+            【此依赖能与AT模式的依赖sharding-transaction-base-seata-at共存，不影响XA模式】
+        -->
+        <dependency>
+            <groupId>org.apache.shardingsphere</groupId>
+            <artifactId>sharding-transaction-xa-core</artifactId>
+            <version>4.1.1</version>
+        </dependency>
+        <!-- sharding支持AT模式的依赖
+            在service上添加注解 @ShardingTransactionType(TransactionType.AT ) 配合@Transactional使用
+            该依赖中的SeataATShardingTransactionManager类提供了[满足shardingsphere提供的事务管理器的标准]的事务管理器
+            【此依赖不能与XA模式的依赖sharding-jdbc-spring-boot-starter共存，否则AT模式会失效】
+        -->
+        <dependency>
+            <groupId>org.apache.shardingsphere</groupId>
+            <artifactId>sharding-transaction-base-seata-at</artifactId>
+            <version>4.1.1</version>
+        </dependency>
+    </dependencies>
+</project>

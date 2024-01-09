@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xw.mapper.ProductMapper">
+    <!-- 根据主键 ID 查询 -->
+    <select id="selectByPrimaryKey" resultType="com.xw.entity.Product" parameterType="INTEGER">
+        SELECT * FROM distribute_lock_demo_product
+        WHERE id = #{id}
+    </select>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.xw.entity.Product">
+        UPDATE distribute_lock_demo_product
+        <set>
+            <if test="null != productName and '' != productName">
+                product_name = #{productName},
+            </if>
+            <if test="null != price and '' != price">
+                price = #{price},
+            </if>
+            <if test="null != count">
+                count = #{count},
+            </if>
+            <if test="null != productDesc and '' != productDesc">
+                product_desc = #{productDesc},
+            </if>
+            <if test="null != createTime">
+                create_time = #{createTime},
+            </if>
+            <if test="null != createUser and '' != createUser">
+                create_user = #{createUser},
+            </if>
+            <if test="null != updateTime">
+                update_time = #{updateTime},
+            </if>
+            <if test="null != updateUser and '' != updateUser">
+                update_user = #{updateUser},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="updateProductCount" >
+        UPDATE distribute_lock_demo_product
+        set count       = count - #{purchaseProductNum},
+            update_user = #{updateUser},
+            update_time = #{updateTime}
+        where id = #{id}
+    </update>
+</mapper>

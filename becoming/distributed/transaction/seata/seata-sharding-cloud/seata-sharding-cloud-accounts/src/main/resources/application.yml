@@ -1,0 +1,43 @@
+server:
+  port: 12251
+spring:
+  application:
+    name: seata-sharding-cloud-accounts
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/becoming?useSSL=true
+    username: root
+    password: root
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.229.10:8848
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+
+seata:
+  registry:
+    type: file # 配置注册中心，如果没有注册中心默认file，可以省略不写
+  config:
+    type: file  # 配置配置中心，如果没有配置中心默认file，可以省略不写
+  service:
+    # # 指定事务分组 default_tx_group 表示分组名称 default 表示集群名称
+    vgroup-mapping:
+      default_tx_group: default
+    # 指定seata服务器地址
+    grouplist:
+      # 集群名称: seata地址
+      default: 192.168.229.10:8091
+    # 禁用全局事务 true 禁用 false 开启（默认 可以省略不写）
+    disable-global-transaction: false
+  # 指定项目名称 默认取值spring.application.name，若存在spring.application.name 可以省略不写
+#  application-id: user
+  tx-service-group: default_tx_group
+
+  # 1、开启自动代理 默认 true 开启 可以省略不写
+#  enable-auto-data-source-proxy: true
+  # 2、指定使用那种模式解决分布式事务 默认AT
+#  data-source-proxy-mode: XA

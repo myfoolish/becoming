@@ -1,0 +1,74 @@
+server:
+  port: 12254
+spring:
+  application:
+    name: seata-sharding-cloud-orders
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.229.10:8848
+  # 分库分表（模拟）
+  shardingsphere:
+    datasource:
+      names: becoming0,becoming1
+      becoming0:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://127.0.0.1:3306/becoming0?useSSL=true
+        username: root
+        password: root
+      becoming1:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://127.0.0.1:3306/becoming1?useSSL=true
+        username: root
+        password: root
+    # 分库分表规则
+    sharding:
+      # 分库策略
+      default-database-strategy:
+        # 行表达式
+        inline:
+          # 使用id取值进行运算
+          sharding-column: id
+          # 运算规则
+          algorithm-expression: becoming$->{id%2}
+      tables:
+        # 需要分库分表的表名，对应mapper中的表名
+        orders:
+          #指定数据对节点 可能时becoming0中对orders0 orders1 orders2， becoming1中对orders0 orders1 orders2
+          actual-data-nodes: becoming$->{0..1}.orders$->{0..2}
+          # 分表
+          table-strategy:
+            inline:
+              sharding-column: id
+              algorithm-expression: orders$->{id%3}
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+
+
+seata:
+  registry:
+    type: file # 配置注册中心，如果没有注册中心默认file，可以省略不写
+  config:
+    type: file  # 配置配置中心，如果没有配置中心默认file，可以省略不写
+  service:
+    # # 指定事务分组 default_tx_group 表示分组名称 default 表示集群名称
+    vgroup-mapping:
+      default_tx_group: default
+    # 指定seata服务器地址
+    grouplist:
+      # 集群名称: seata地址
+      default: 192.168.229.10:8091
+    # 禁用全局事务 true 禁用 false 开启（默认 可以省略不写）
+#    disable-global-transaction: false
+  # 指定项目名称 默认取值spring.application.name，若存在spring.application.name 可以省略不写
+#  application-id: user
+  tx-service-group: default_tx_group
+
+  # 1、开启自动代理 默认 true 开启 可以省略不写
+#  enable-auto-data-source-proxy: true
+  # 2、指定使用那种模式解决分布式事务 默认AT
+#  data-source-proxy-mode: XA

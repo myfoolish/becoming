@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.xw.mapper.OrderItemMapper">
+    <insert id="insertSelective" parameterType="com.xw.entity.OrderItem">
+        insert into distribute_lock_demo_order_item
+            (order_id, produce_id, purchase_count, purchase_price, create_time, create_user, update_time, update_user)
+        values
+            (#{orderId}, #{produceId}, #{purchaseCount}, #{purchasePrice}, #{createTime}, #{createUser}, #{updateTime}, #{updateUser});
+    </insert>
+</mapper>

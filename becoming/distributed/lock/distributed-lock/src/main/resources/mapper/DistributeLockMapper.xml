@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.xw.mapper.DistributeLockMapper">
+    <insert id="insertSelective" parameterType="com.xw.entity.DistributeLock">
+        insert into distribute_lock_demo (business_code, business_name);
+        values (#{business_code}, #{business_name});
+    </insert>
+
+    <select id="selectDistributeLock" resultType="com.xw.entity.DistributeLock">
+        select id, business_code, business_name from distribute_lock_demo
+        where business_code = #{businessCode,jdbcType=VARCHAR}
+        for update
+    </select>
+</mapper>

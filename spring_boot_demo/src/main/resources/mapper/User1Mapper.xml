@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xw.mapper.mapper1.User1Mapper">
+    <!-- 添加 -->
+    <insert id="insert" parameterType="com.xw.spring.entity.User1">
+        INSERT INTO user1(name) VALUES (#{name})
+    </insert>
+
+    <!-- 根据主键 ID 查询 -->
+    <select id="selectByPrimaryKey" resultType="com.xw.spring.entity.User1" parameterType="INTEGER">
+        SELECT * FROM user1 WHERE id = #{id}
+    </select>
+</mapper>

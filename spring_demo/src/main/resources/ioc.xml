@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+">
+    <!--
+        bean生命周期
+            ioc容器准备初始化解析xml
+                对象实例化执行构造方法
+                为对象注入属性
+                调用init-method初始化方法
+            ioc容器初始化结束
+                执行业务代码
+            ioc容器准备销毁
+                调用destroy-method释放资源
+            ioc容器销毁结束
+
+        1、基于构造方法实例化对象（spring默认基于无参构造方法创建对象）
+        2、基于静态工厂实例化对象
+        3、基于工厂方法实例化对象
+    -->
+
+    <!-- 1.1、没有constructor-arg则代表使用默认构造方法（无参构造）实例化对象 -->
+    <bean id="cyanApple" class="com.xw.spring.ioc.eg1.Apple">
+        <property name="title" value="青苹果"/>
+        <property name="color" value="青色"/>
+        <property name="origin" value="中亚"/>
+    </bean>
+    <bean id="child" class="com.xw.spring.ioc.eg1.Person">
+        <property name="name" value="child"/>
+        <property name="apple" ref="cyanApple"/>
+    </bean>
+
+    <!-- 1.2、基于带参构造方法实例化对象 -->
+    <bean id="redApple" class="com.xw.spring.ioc.eg1.Apple">
+        <!-- 基于参数名（常用） -->
+        <constructor-arg name="title" value="红富士"/>
+        <constructor-arg name="color" value="红色"/>
+        <constructor-arg name="origin" value="欧洲"/>
+
+        <!-- 基于参数位置（不推荐） -->
+<!--        <constructor-arg index="0" value="红富士"/>-->
+<!--        <constructor-arg index="1" value="红色"/>-->
+<!--        <constructor-arg index="2" value="欧洲"/>-->
+    </bean>
+    <bean id="adult" class="com.xw.spring.ioc.eg1.Person">
+        <property name="name" value="adult"/>
+        <property name="apple" ref="redApple"/>
+    </bean>
+
+    <!--     注入集合对象      -->
+    <!-- 外部Bean -->
+    <bean id="computer" class="com.xw.spring.ioc.eg2.Computer">
+        <!-- 属性注入 -->
+        <property name="type" value="笔记本"/>
+        <property name="price" value="14999"/>
+    </bean>
+    <!-- 若不设置id和name ioc容器会默认类名全称作为id -->
+    <bean class="com.xw.spring.ioc.eg2.Computer">
+        <!-- 属性注入 -->
+        <property name="type" value="服务器"/>
+        <property name="price" value="24999"/>
+    </bean>
+
+    <!-- 外部Bean 其他地方不能使用 ioc容器中也不会存在 -->
+    <bean id="company" class="com.xw.spring.ioc.eg2.Company">
+        <property name="roomList">
+            <!-- 允许重复，不会去重 -->
+            <list>
+                <value>6001-领导1</value>
+                <value>6001-领导1</value>
+                <value>6002-领导2</value>
+            </list>
+        </property>
+        <property name="roomSet">
+            <!-- 不允许重复，自动去重 -->
+            <set>
+                <value>6001-领导1</value>
+                <value>6001-领导1</value>
+                <value>6002-领导2</value>
+            </set>
+        </property>
+        <property name="computers">
+            <map>
+                <entry key="6001" value-ref="computer"/>
+                <entry key="6002">
+                    <!-- 内部Bean 其他地方不能使用 ioc容器中不会创建 即ioc中不会存在 -->
+                    <bean class="com.xw.spring.ioc.eg2.Computer">
+                        <!-- 构造器注入 -->
+                        <constructor-arg name="type" value="台式机"/>
+                        <constructor-arg name="price" value="13999"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+        <property name="info">
+            <props>
+                <prop key="tel">010-12345678</prop>
+                <prop key="address">北京市朝阳区xxx</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!--
+        bean scope 属性
+        singleton: 单例（默认值）ioc容器启动时创建 每一个容器有且只有唯一的实例，且全局共享
+                singleton在容器单例多线程执行，线程不安全
+        prototype: 多例 每次使用时都是创建一个实例
+                prototype在容器中多实例，占用更多资源，线程安全
+
+        request: web环境下 每一次独立请求存在唯一实例
+        session: web环境下 每一个session存在唯一实例
+        application: web环境下 ServletContext存在唯一实例
+        websocket: 每一次WebSocket连接中存在唯一实例
+    -->
+    <bean id="order1" class="com.xw.spring.ioc.eg3.Order" scope="prototype" init-method="init" destroy-method="destroy">
+        <property name="price" value="1499"/>
+        <property name="quantity" value="2"/>
+    </bean>
+
+    <!--      下面是基于注解配置      -->
+    <!-- 开启注解扫描 -->
+    <context:component-scan base-package="com.xw.spring.autowired"/>
+    <!-- 加载属性文件 -->
+    <context:property-placeholder location="classpath:config.properties"/>
+</beans>

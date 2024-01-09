@@ -1,0 +1,11 @@
+spring:
+  rabbitmq:
+    addresses: 192.168.229.11
+    host: 5672
+    username: xwor
+    password: xwor
+    virtual-host: /
+#    手动确认消息
+    listener:
+      simple:
+        acknowledge-mode: manual
